@@ -28,7 +28,7 @@ impl Command for TypeCommand {
             let reg = reg.borrow();
             match reg.get(cmd_name) {
                 Some(cmd) if cmd.is_builtin() => {
-                    println!("{}: is shell builtin", cmd_name);
+                    println!("{} is a shell builtin", cmd_name);
                 }
                 Some(_) => {
                     unreachable!();
