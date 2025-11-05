@@ -1,8 +1,9 @@
 use crate::cli::command::Command;
 use std::collections::HashMap;
+use std::rc::Rc;
 
 pub struct CommandRegistry {
-    commands: HashMap<String, Box<dyn Command>>,
+    commands: HashMap<String, Rc<dyn Command>>,
 }
 
 impl CommandRegistry {
@@ -12,8 +13,12 @@ impl CommandRegistry {
         }
     }
 
-    pub fn register(&mut self, cmd: Box<dyn Command>) {
+    pub fn register(&mut self, cmd: Rc<dyn Command>) {
         self.commands.insert(cmd.name().to_string(), cmd);
+    }
+
+    pub fn get(&self, name: &str) -> Option<&Rc<dyn Command>> {
+        self.commands.get(name)
     }
 
     pub fn execute(&self, input: &str) -> bool {
