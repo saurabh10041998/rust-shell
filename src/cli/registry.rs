@@ -1,4 +1,4 @@
-use crate::cli::command::Command;
+use crate::cli::command::{Command, CommandContext};
 use std::collections::HashMap;
 use std::rc::Rc;
 
@@ -21,7 +21,7 @@ impl CommandRegistry {
         self.commands.get(name)
     }
 
-    pub fn execute(&self, input: &str) -> bool {
+    pub fn execute(&self, input: &str, ctx: &mut CommandContext) -> bool {
         let mut parts = input.trim().split_whitespace();
         let cmd_name = match parts.next() {
             Some(c) => c,
@@ -30,7 +30,7 @@ impl CommandRegistry {
         let args: Vec<&str> = parts.collect();
 
         if let Some(cmd) = self.commands.get(cmd_name) {
-            cmd.execute(&args);
+            cmd.execute(&args, ctx);
         } else {
             println!("{}: command not found", cmd_name);
         }

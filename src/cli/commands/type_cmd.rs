@@ -1,4 +1,4 @@
-use crate::cli::command::Command;
+use crate::cli::command::{Command, CommandContext};
 use crate::cli::registry::CommandRegistry;
 use std::cell::RefCell;
 use std::rc::Weak;
@@ -16,11 +16,11 @@ impl Command for TypeCommand {
         "Show if command is built-in"
     }
 
-    fn execute(&self, args: &[&str]) {
+    fn execute(&self, args: &[&str], ctx: &mut CommandContext) {
         let cmd_name = match args.get(0) {
             Some(cmd_str) => cmd_str,
             None => {
-                println!("Usage: type <command-name>");
+                writeln!(ctx.stdout, "Usage: type <command-name>").ok();
                 return;
             }
         };
@@ -28,13 +28,13 @@ impl Command for TypeCommand {
             let reg = reg.borrow();
             match reg.get(cmd_name) {
                 Some(cmd) if cmd.is_builtin() => {
-                    println!("{} is a shell builtin", cmd_name);
+                    writeln!(ctx.stdout, "{} is a shell builtin", cmd_name).ok();
                 }
                 Some(_) => {
                     unreachable!();
                 }
                 None => {
-                    println!("{}: not found", cmd_name)
+                    writeln!(ctx.stdout, "{}: not found", cmd_name).ok();
                 }
             }
         }

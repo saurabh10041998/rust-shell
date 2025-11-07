@@ -1,4 +1,4 @@
-use crate::cli::command::Command;
+use crate::cli::command::{Command, CommandContext};
 
 pub struct EchoCommand;
 
@@ -11,7 +11,7 @@ impl Command for EchoCommand {
         "Echos input arguments"
     }
 
-    fn execute(&self, args: &[&str]) {
-        println!("{}", args.join(" "));
+    fn execute(&self, args: &[&str], ctx: &mut CommandContext) {
+        writeln!(ctx.stdout, "{}", args.join(" ")).ok();
     }
 }
