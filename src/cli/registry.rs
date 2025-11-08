@@ -1,5 +1,7 @@
 use crate::cli::command::{Command, CommandContext};
+use crate::utils::path_lookup::find_in_path;
 use std::collections::HashMap;
+use std::process::Command as ProcCommand;
 use std::rc::Rc;
 
 pub struct CommandRegistry {
@@ -31,9 +33,26 @@ impl CommandRegistry {
 
         if let Some(cmd) = self.commands.get(cmd_name) {
             cmd.execute(&args, ctx);
-        } else {
-            println!("{}: command not found", cmd_name);
+            return true;
         }
+
+        if let Some(_) = find_in_path(cmd_name) {
+            match ProcCommand::new(cmd_name)
+                .args(&args)
+                .spawn()
+                .and_then(|mut child| child.wait())
+            {
+                Ok(status) => {
+                    writeln!(ctx.stdout, "{}", status).ok();
+                }
+                Err(e) => {
+                    writeln!(ctx.stdout, "Failed to run {}: {}", cmd_name, e).ok();
+                }
+            }
+            return true;
+        }
+
+        writeln!(ctx.stdout, "{}: not found", cmd_name).ok();
         true
     }
 }
