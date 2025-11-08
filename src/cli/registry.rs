@@ -42,8 +42,8 @@ impl CommandRegistry {
                 .spawn()
                 .and_then(|mut child| child.wait())
             {
-                Ok(status) => {
-                    writeln!(ctx.stdout, "{}", status).ok();
+                Ok(_status) => {
+                    //writeln!(ctx.stdout, "{}", status).ok();
                 }
                 Err(e) => {
                     writeln!(ctx.stdout, "Failed to run {}: {}", cmd_name, e).ok();
