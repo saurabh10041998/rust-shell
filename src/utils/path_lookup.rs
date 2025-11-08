@@ -37,3 +37,22 @@ pub fn is_executable(path: &Path) -> bool {
         false
     }
 }
+
+pub fn expand_tilde(path: &str) -> String {
+    if !path.starts_with('~') {
+        return path.to_string();
+    }
+    let home = env::var("HOME").unwrap_or_else(|_| "/".to_string());
+
+    if path == "~" {
+        return home;
+    }
+
+    if let Some(rest) = path.strip_prefix("~/") {
+        let mut pb = PathBuf::from(home);
+        pb.push(rest);
+        return pb.to_string_lossy().to_string();
+    }
+
+    path.to_string()
+}
