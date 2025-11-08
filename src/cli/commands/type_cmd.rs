@@ -1,5 +1,6 @@
 use crate::cli::command::{Command, CommandContext};
 use crate::cli::registry::CommandRegistry;
+use crate::utils::path_lookup::find_in_path;
 use std::cell::RefCell;
 use std::rc::Weak;
 
@@ -26,17 +27,18 @@ impl Command for TypeCommand {
         };
         if let Some(reg) = self.registry.upgrade() {
             let reg = reg.borrow();
-            match reg.get(cmd_name) {
-                Some(cmd) if cmd.is_builtin() => {
+            if let Some(cmd) = reg.get(cmd_name) {
+                if cmd.is_builtin() {
                     writeln!(ctx.stdout, "{} is a shell builtin", cmd_name).ok();
-                }
-                Some(_) => {
-                    unreachable!();
-                }
-                None => {
-                    writeln!(ctx.stdout, "{}: not found", cmd_name).ok();
+                    return;
                 }
             }
+
+            if let Some(path) = find_in_path(cmd_name) {
+                writeln!(ctx.stdout, "{} is {}", cmd_name, path.display()).ok();
+                return;
+            }
         }
+        writeln!(ctx.stdout, "{}: command not found", cmd_name).ok();
     }
 }

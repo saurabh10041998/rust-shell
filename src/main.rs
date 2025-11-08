@@ -2,6 +2,7 @@ use std::cell::RefCell;
 use std::io::{self, Write};
 use std::rc::Rc;
 mod cli;
+mod utils;
 use cli::command::CommandContext;
 use cli::commands;
 use cli::commands::type_cmd::TypeCommand;
