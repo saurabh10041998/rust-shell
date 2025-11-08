@@ -39,6 +39,6 @@ impl Command for TypeCommand {
                 return;
             }
         }
-        writeln!(ctx.stdout, "{}: command not found", cmd_name).ok();
+        writeln!(ctx.stdout, "{}: not found", cmd_name).ok();
     }
 }
