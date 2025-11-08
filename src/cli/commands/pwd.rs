@@ -13,6 +13,10 @@ impl Command for PwdCommand {
     }
 
     fn execute(&self, _args: &[&str], ctx: &mut CommandContext) {
+        if let Some(pwd) = ctx.env.get("PWD") {
+            writeln!(ctx.stdout, "{}", pwd).ok();
+            return;
+        }
         match env::current_dir() {
             Ok(path) => {
                 writeln!(ctx.stdout, "{}", path.display()).ok();

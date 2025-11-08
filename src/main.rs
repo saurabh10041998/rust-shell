@@ -1,4 +1,5 @@
 use std::cell::RefCell;
+use std::collections::HashMap;
 use std::io::{self, Write};
 use std::rc::Rc;
 mod cli;
@@ -11,10 +12,17 @@ use cli::registry::CommandRegistry;
 fn main() {
     let mut stdin = io::stdin();
     let mut stdout = io::stdout();
+    let mut stderr = io::stderr();
     let mut ctx = CommandContext {
         stdin: &mut stdin,
         stdout: &mut stdout,
+        stderr: &mut stderr,
+        env: HashMap::new(),
     };
+
+    if let Ok(dir) = std::env::current_dir() {
+        ctx.env.insert("PWD".into(), dir.display().to_string());
+    }
 
     let mut registry = CommandRegistry::new();
     commands::register_all(&mut registry);
