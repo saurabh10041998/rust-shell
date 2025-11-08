@@ -1,5 +1,6 @@
 use crate::cli::command::{Command, CommandContext};
 use std::env;
+use std::io::ErrorKind;
 
 pub struct CdCommand;
 
@@ -20,7 +21,12 @@ impl Command for CdCommand {
         };
 
         if let Err(e) = env::set_current_dir(target) {
-            writeln!(ctx.stderr, "cd: {}: {}", target, e).ok();
+            match e.kind() {
+                ErrorKind::NotFound => {
+                    writeln!(ctx.stderr, "cd: {}: No such file or directory", target).ok()
+                }
+                _ => writeln!(ctx.stderr, "cd: {}: {}", target, e).ok(),
+            };
             return;
         }
 
