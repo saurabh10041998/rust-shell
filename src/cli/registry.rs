@@ -1,4 +1,5 @@
 use crate::cli::command::{Command, CommandContext};
+use crate::cli::parser::split_argv::ArgvSplitter;
 use crate::utils::path_lookup::find_in_path;
 use std::collections::HashMap;
 use std::process::Command as ProcCommand;
@@ -24,12 +25,18 @@ impl CommandRegistry {
     }
 
     pub fn execute(&self, input: &str, ctx: &mut CommandContext) -> bool {
-        let mut parts = input.trim().split_whitespace();
-        let cmd_name = match parts.next() {
-            Some(c) => c,
-            None => return true,
+        let argv = match ArgvSplitter::split(input) {
+            Ok(v) => v,
+            Err(e) => {
+                writeln!(ctx.stderr, "parse error: {}", e).ok();
+                return true;
+            }
         };
-        let args: Vec<&str> = parts.collect();
+        if argv.is_empty() {
+            return true;
+        }
+        let cmd_name = &argv[0];
+        let args = argv.iter().skip(1).map(|s| s.as_str()).collect::<Vec<_>>();
 
         if let Some(cmd) = self.commands.get(cmd_name) {
             cmd.execute(&args, ctx);
