@@ -47,6 +47,7 @@ impl ArgvSplitter {
                 Mode::InDouble => match ch {
                     '"' => mode = Mode::Normal,
                     '\\' => {
+                        /*
                         if let Some(n) = chars.next() {
                             let push: Cow<'static, str> = match n {
                                 'n' => "\n".into(),
@@ -62,6 +63,10 @@ impl ArgvSplitter {
                                 }
                             };
                             buf.push_str(&push);
+                        */
+                        if let Some(n) = chars.next() {
+                            buf.push('\\');
+                            buf.push(n);
                         }
                     }
                     c => buf.push(c),
