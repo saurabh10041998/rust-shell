@@ -53,6 +53,7 @@ impl ArgvSplitter {
                                 'r' => "\r".into(),
                                 't' => "\t".into(),
                                 '"' => "\"".into(),
+                                ' ' => " ".into(),
                                 '\\' => "\\".into(),
                                 other => {
                                     buf.push('\\');
