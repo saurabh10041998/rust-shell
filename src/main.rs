@@ -10,13 +10,13 @@ use cli::commands::type_cmd::TypeCommand;
 use cli::registry::CommandRegistry;
 
 fn main() {
-    let mut stdin = io::stdin();
-    let mut stdout = io::stdout();
-    let mut stderr = io::stderr();
+    let stdin = io::stdin();
+    let stdout = io::stdout();
+    let stderr = io::stderr();
     let mut ctx = CommandContext {
-        stdin: &mut stdin,
-        stdout: &mut stdout,
-        stderr: &mut stderr,
+        stdin: Box::new(stdin),
+        stdout: Box::new(stdout),
+        stderr: Box::new(stderr),
         env: HashMap::new(),
     };
 

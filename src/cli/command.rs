@@ -1,9 +1,9 @@
 use std::collections::HashMap;
 
-pub struct CommandContext<'a> {
-    pub stdin: &'a mut dyn std::io::Read,
-    pub stdout: &'a mut dyn std::io::Write,
-    pub stderr: &'a mut dyn std::io::Write,
+pub struct CommandContext {
+    pub stdin: Box<dyn std::io::Read>,
+    pub stdout: Box<dyn std::io::Write>,
+    pub stderr: Box<dyn std::io::Write>,
     pub env: HashMap<String, String>,
 }
 
