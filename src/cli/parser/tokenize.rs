@@ -58,6 +58,22 @@ impl ArgvTokenizer {
                                 buf.push('2');
                             }
                         }
+                        '1' => {
+                            if let Some('>') = chars.peek().copied() {
+                                chars.next(); // consume '>'
+                                flush(&mut out, &mut buf);
+
+                                // check for >>
+                                if let Some('>') = chars.peek().copied() {
+                                    chars.next(); // consume '>'
+                                    out.push(Token::RedirectOutAppend);
+                                } else {
+                                    out.push(Token::RedirectOut);
+                                }
+                            } else {
+                                buf.push('1');
+                            }
+                        }
                         '>' => {
                             flush(&mut out, &mut buf);
 
