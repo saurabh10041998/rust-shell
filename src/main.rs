@@ -4,19 +4,16 @@ use std::io::{self, Write};
 use std::rc::Rc;
 mod cli;
 mod utils;
-use cli::command::CommandContext;
+use cli::command::{CommandContext, IoHandle};
 use cli::commands;
 use cli::commands::type_cmd::TypeCommand;
 use cli::registry::CommandRegistry;
 
 fn main() {
-    let stdin = io::stdin();
-    let stdout = io::stdout();
-    let stderr = io::stderr();
     let mut ctx = CommandContext {
-        stdin: Box::new(stdin),
-        stdout: Box::new(stdout),
-        stderr: Box::new(stderr),
+        stdin: IoHandle::Stdin,
+        stdout: IoHandle::Stdout,
+        stderr: IoHandle::Stderr,
         env: HashMap::new(),
     };
 

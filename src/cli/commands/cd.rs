@@ -25,10 +25,14 @@ impl Command for CdCommand {
 
         if let Err(e) = env::set_current_dir(&target) {
             match e.kind() {
-                ErrorKind::NotFound => {
-                    writeln!(ctx.stderr, "cd: {}: No such file or directory", target).ok()
-                }
-                _ => writeln!(ctx.stderr, "cd: {}: {}", target, e).ok(),
+                ErrorKind::NotFound => ctx
+                    .stderr
+                    .write_line(format!("cd: {}: No such file or directory", target).as_str())
+                    .ok(),
+                _ => ctx
+                    .stderr
+                    .write_line(format!("cd: {}: {}", target, e).as_str())
+                    .ok(),
             };
             return;
         }

@@ -21,7 +21,7 @@ impl Command for TypeCommand {
         let cmd_name = match args.get(0) {
             Some(cmd_str) => cmd_str,
             None => {
-                writeln!(ctx.stdout, "Usage: type <command-name>").ok();
+                ctx.stderr.write_line("Usage: type <command-name>").ok();
                 return;
             }
         };
@@ -29,16 +29,22 @@ impl Command for TypeCommand {
             let reg = reg.borrow();
             if let Some(cmd) = reg.get(cmd_name) {
                 if cmd.is_builtin() {
-                    writeln!(ctx.stdout, "{} is a shell builtin", cmd_name).ok();
+                    ctx.stdout
+                        .write_line(format!("{} is a shell builtin", cmd_name).as_str())
+                        .ok();
                     return;
                 }
             }
 
             if let Some(path) = find_in_path(cmd_name) {
-                writeln!(ctx.stdout, "{} is {}", cmd_name, path.display()).ok();
+                ctx.stdout
+                    .write_line(format!("{} is {}", cmd_name, path.display()).as_str())
+                    .ok();
                 return;
             }
         }
-        writeln!(ctx.stdout, "{}: not found", cmd_name).ok();
+        ctx.stderr
+            .write_line(format!("{}: not found", cmd_name).as_str())
+            .ok();
     }
 }

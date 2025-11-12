@@ -12,6 +12,8 @@ impl Command for EchoCommand {
     }
 
     fn execute(&self, args: &[&str], ctx: &mut CommandContext) {
-        writeln!(ctx.stdout, "{}", args.join(" ")).ok();
+        ctx.stdout
+            .write_line(format!("{}", args.join(" ")).as_str())
+            .ok();
     }
 }
